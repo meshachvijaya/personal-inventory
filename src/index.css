@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@layer base {
+    h2 {
+        @apply mb-4 text-4xl font-semibold leading-none
+    }
+
+    label {
+        @apply font-semibold text-lg;
+    }
+
+    .input {
+        @apply border border-indigo-600 rounded-sm focus:outline-indigo-600 focus:border-indigo-600 block p-2
+    }
+
+    .each-input {
+        @apply my-4
+    }
+
+}
+
+@layer components {
+    .login {
+        @apply flex flex-col justify-center items-center shadow-[rgba(149,157,165,0.2)_0px_8px_24px] p-8 px-12 bg-white rounded-lg
+    }
+
+    .button {
+        @apply bg-indigo-600 p-2 text-white rounded-sm px-3 py-1
+    }
+}
