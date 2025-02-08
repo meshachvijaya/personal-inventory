@@ -5,8 +5,12 @@
         @apply mb-4 text-4xl font-semibold leading-none
     }
 
+    .h2-choose {
+        @apply mb-4 text-2xl font-semibold leading-none
+    }
+
     label {
-        @apply font-semibold text-lg;
+        @apply font-semibold text-lg
     }
 
     .input {
@@ -26,5 +30,13 @@
 
     .button {
         @apply bg-indigo-600 p-2 text-white rounded-sm px-3 py-1
+    }
+
+    .choose {
+        @apply flex flex-row justify-center items-center space-x-4
+    }
+
+    .item-container {
+        @apply text-center shadow-[rgba(149,157,165,0.2)_0px_8px_24px] p-8 px-12 bg-white rounded-lg
     }
 }
