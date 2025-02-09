@@ -1,7 +1,8 @@
 const ManageItems = () => {
     return (
-        <div>
-            
+        <div className="flex flex-row">
+            <div>Sidebar</div>
+            <div>Content</div>
         </div>
     );
 };
