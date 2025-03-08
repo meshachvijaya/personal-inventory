@@ -1,5 +1,5 @@
 import {Link, useNavigate} from "react-router-dom";
-import { useState } from "react";
+import {useState} from "react";
 import api from "../api/axios.js";
 
 const AddItem = () => {
@@ -79,12 +79,15 @@ const AddItem = () => {
                         />
                     </div>
                     <div className="flex flex-row justify-between">
-                        <Link
-                            to="/manage-items"
-                        >
+                        <Link to="/manage-items">
                             Go To Manage Items
                         </Link>
-                        <button type="submit" className="button">Add Item</button>
+                        <button
+                            type="submit"
+                            className="button"
+                        >
+                            Add Item
+                        </button>
                     </div>
                 </form>
             </div>

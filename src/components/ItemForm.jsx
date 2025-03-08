@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 
 // eslint-disable-next-line react/prop-types
-const ItemForm = ({ onSubmit, initialData, onCancel}) => {
+const ItemForm = ({onSubmit, initialData, onCancel}) => {
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -18,8 +18,8 @@ const ItemForm = ({ onSubmit, initialData, onCancel}) => {
     }, [initialData]);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
 
     const handleSubmit = (e) => {
@@ -73,8 +73,19 @@ const ItemForm = ({ onSubmit, initialData, onCancel}) => {
                         />
                     </div>
                     <div className="flex flex-row justify-between">
-                        <button type="button" onClick={onCancel} className="button">Cancel</button>
-                        <button type="submit" className="button">{initialData ? "Save Changes" : "Add Item"}</button>
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="button"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="button"
+                        >
+                            {initialData ? "Save Changes" : "Add Item"}
+                        </button>
                     </div>
                 </form>
             </div>

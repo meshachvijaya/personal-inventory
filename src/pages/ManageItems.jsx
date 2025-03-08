@@ -9,7 +9,6 @@ const ManageItems = () => {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState(null);
 
-
     useEffect(() => {
         fetchItems();
     }, []);
