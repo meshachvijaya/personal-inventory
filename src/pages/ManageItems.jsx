@@ -1,10 +1,14 @@
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import api from "../api/axios.js";
+import ItemForm from "../components/ItemForm.jsx";
 
 const ManageItems = () => {
     const [items, setItems] = useState([]); // store item
     const [selectedIds, setSelectedIds] = useState([]); // select item with checkbox
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [currentItem, setCurrentItem] = useState(null);
+
 
     useEffect(() => {
         fetchItems();
@@ -31,7 +35,7 @@ const ManageItems = () => {
             fetchItems(); // refresh the list
             setSelectedIds([]); // clear selected id
         } catch (error) {
-            console.log("Error when deleteing items...", error);
+            console.log("Error when deleting items...", error);
         }
     }
 
@@ -41,9 +45,39 @@ const ManageItems = () => {
             await api.delete(`/items/${id}`); // delete single item
             fetchItems();
         } catch (error) {
-            console.log("Error when deleteing selected items...", error);
+            console.log("Error when deleting selected items...", error);
         }
     }
+
+    // Open form editor
+    const handleEdit = async (item) => {
+        setCurrentItem(item);
+        setIsFormOpen(true);
+    };
+
+    // Handle form submit both for add or edit
+    const handleFormSubmit = async (formData) => {
+        try {
+            if (currentItem) {
+                // update existing item
+                await api.put(`/items/${currentItem.id}`, formData);
+            } else {
+                // add new item
+                await api.post("/items", formData);
+            }
+            fetchItems(); // refresh lsit
+            setIsFormOpen(false); // close form popup
+            setCurrentItem(null); // reset item field on form
+        } catch (error) {
+            console.log("Error saving items: ", error);
+        }
+    };
+
+    // Close form popup
+    const handleFormCancel = async () => {
+        setIsFormOpen(false);
+        setIsFormOpen(null);
+    };
 
     return (
         <div className="flex">
@@ -72,14 +106,18 @@ const ManageItems = () => {
                     <table className="w-full border-collapse">
                         <thead>
                         <tr className="bg-gray-200 text-left">
-                            <th className="p-3"><input type="checkbox" checked={selectedIds.length === items.length}
-                                                       onChange={(e) => {
-                                                           if (e.target.checked) {
-                                                               setSelectedIds(items.map((item) => item.id));
-                                                           } else {
-                                                               setSelectedIds([])
-                                                           }
-                                                       }}/>
+                            <th className="p-3">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedIds.length === items.length}
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            setSelectedIds(items.map((item) => item.id));
+                                        } else {
+                                            setSelectedIds([])
+                                        }
+                                    }}
+                                />
                             </th>
                             <th className="p-3">Item Name</th>
                             <th className="p-3">Description</th>
@@ -91,18 +129,25 @@ const ManageItems = () => {
                         <tbody>
                         {items.map((item) => (
                             <tr key={item.id} className="border-b">
-                                <td>
-                                    <input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => handleCheckboxChange(item.id)} />
+                                <td className="p-3">
+                                    <input type="checkbox"
+                                           checked={selectedIds.includes(item.id)}
+                                           onChange={() => handleCheckboxChange(item.id)}
+                                    />
                                 </td>
                                 <td className="p-3">{item.name}</td>
                                 <td className="p-3">{item.description}</td>
                                 <td className="p-3">{item.quantity}</td>
                                 <td className="p-3">{item.location}</td>
                                 <td className="p-3">
-                                    <Link to={`/edit-items/${item.id}`} className="text-blue-600 hover:underline mr-2">
+                                    <button
+                                        onClick={() => handleEdit(item)}
+                                        className="text-blue-600 hover:underline mr-2">
                                         Edit
-                                    </Link>
-                                    <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:underline mr-2">
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(item.id)}
+                                        className="text-red-600 hover:underline mr-2">
                                         Delete
                                     </button>
                                 </td>
@@ -124,6 +169,19 @@ const ManageItems = () => {
                     </table>
                 </div>
             </div>
+
+            {/* form popup */}
+            {isFormOpen && (
+                <div className="fixed inset-0 flex items-center justify-center">
+                    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+                        <ItemForm
+                            onSubmit={handleFormSubmit}
+                            initialValues={currentItem}
+                            onCancel={handleFormCancel}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

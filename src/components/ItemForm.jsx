@@ -1,11 +1,7 @@
-import {Link, useNavigate} from "react-router-dom";
-import { useState } from "react";
-import api from "../api/axios.js";
+import {useEffect, useState} from "react";
 
-const AddItem = () => {
-    const navigate = useNavigate();
-
-    // state to store form data
+// eslint-disable-next-line react/prop-types
+const ItemForm = ({ onSubmit, initialData, onCancel}) => {
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -13,30 +9,28 @@ const AddItem = () => {
         location: ""
     });
 
-    // handle form input change
+    // if initial data is provide (for edit), populate the form
+
+    useEffect(() => {
+        if (initialData) {
+            setFormData(initialData);
+        }
+    }, [initialData]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // handle form submit
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            // send data to backend
-            await api.post("/items", formData);
-            alert("Item added successfully.");
-            navigate("/manage-items");
-        } catch (error) {
-            console.log("Error when adding item", error);
-            alert("Error when adding item");
-        }
+        onSubmit(formData);
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="login">
-                <h2>Add Item</h2>
+                <h2>{initialData ? "Edit Item" : "Add Item"}</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <input
                         type="text"
@@ -79,12 +73,8 @@ const AddItem = () => {
                         />
                     </div>
                     <div className="flex flex-row justify-between">
-                        <Link
-                            to="/manage-items"
-                        >
-                            Go To Manage Items
-                        </Link>
-                        <button type="submit" className="button">Add Item</button>
+                        <button type="button" onClick={onCancel} className="button">Cancel</button>
+                        <button type="submit" className="button">{initialData ? "Save Changes" : "Add Item"}</button>
                     </div>
                 </form>
             </div>
@@ -92,4 +82,4 @@ const AddItem = () => {
     );
 };
 
-export default AddItem;
+export default ItemForm;
