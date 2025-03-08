@@ -1,14 +1,13 @@
-import {Link, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import api from "../api/axios.js";
 import ItemForm from "../components/ItemForm.jsx";
 
 const ManageItems = () => {
     const [items, setItems] = useState([]); // store item
     const [selectedIds, setSelectedIds] = useState([]); // select item with checkbox
-    const navigate = useNavigate();
-    // const [isFormOpen, setIsFormOpen] = useState(false);
-    // const [currentItem, setCurrentItem] = useState(null);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [currentItem, setCurrentItem] = useState(null);
 
     useEffect(() => {
         fetchItems();
@@ -31,7 +30,7 @@ const ManageItems = () => {
     // handle bulk delete
     const handleBulkDelete = async () => {
         try {
-            await api.delete("/items/bulk", {data: {ids: selectedIds}}); // bulk delete
+            await api.delete("/items/bulk", { data: { ids: selectedIds } }); // bulk delete
             fetchItems(); // refresh the list
             setSelectedIds([]); // clear selected id
         } catch (error) {
@@ -50,38 +49,34 @@ const ManageItems = () => {
     }
 
     // Open form editor (current change redirect instead modal because I'm still don't know how to implement proper design ahahahah
-    // const handleEdit = async (item) => {
-    //     setCurrentItem(item);
-    //     setIsFormOpen(true);
-    // };
-
-    const handleEdit = (id) => {
-        navigate(`/edit-item/${id}`);
+    const handleEdit = async (item) => {
+        setCurrentItem(item);
+        setIsFormOpen(true);
     };
 
     // Handle form submit both for add or edit
-    // const handleFormSubmit = async (formData) => {
-    //     try {
-    //         if (currentItem) {
-    //             // update existing item
-    //             await api.put(`/items/${currentItem.id}`, formData);
-    //         } else {
-    //             // add new item
-    //             await api.post("/items", formData);
-    //         }
-    //         fetchItems(); // refresh lsit
-    //         setIsFormOpen(false); // close form popup
-    //         setCurrentItem(null); // reset item field on form
-    //     } catch (error) {
-    //         console.log("Error saving items: ", error);
-    //     }
-    // };
+    const handleFormSubmit = async (formData) => {
+        try {
+            if (currentItem) {
+                // update existing item
+                await api.put(`/items/${currentItem.id}`, formData);
+            } else {
+                // add new item
+                await api.post("/items", formData);
+            }
+            fetchItems(); // refresh lsit
+            setIsFormOpen(false); // close form popup
+            setCurrentItem(null); // reset item field on form
+        } catch (error) {
+            console.log("Error saving items: ", error);
+        }
+    };
 
     // Close form popup
-    // const handleFormCancel = async () => {
-    //     setIsFormOpen(false);
-    //     setIsFormOpen(null);
-    // };
+    const handleFormCancel = async () => {
+        setIsFormOpen(false);
+        setIsFormOpen(null);
+    };
 
     return (
         <div className="flex">
@@ -109,83 +104,83 @@ const ManageItems = () => {
                 <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4">
                     <table className="w-full border-collapse">
                         <thead>
-                        <tr className="bg-gray-200 text-left">
-                            <th className="p-3">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedIds.length === items.length}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setSelectedIds(items.map((item) => item.id));
-                                        } else {
-                                            setSelectedIds([])
-                                        }
-                                    }}
-                                />
-                            </th>
-                            <th className="p-3">Item Name</th>
-                            <th className="p-3">Description</th>
-                            <th className="p-3">Quantity</th>
-                            <th className="p-3">Location</th>
-                            <th className="p-3">Action</th>
-                        </tr>
+                            <tr className="bg-gray-200 text-left">
+                                <th className="p-3">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedIds.length === items.length}
+                                        onChange={(e) => {
+                                            if (e.target.checked) {
+                                                setSelectedIds(items.map((item) => item.id));
+                                            } else {
+                                                setSelectedIds([])
+                                            }
+                                        }}
+                                    />
+                                </th>
+                                <th className="p-3">Item Name</th>
+                                <th className="p-3">Description</th>
+                                <th className="p-3">Quantity</th>
+                                <th className="p-3">Location</th>
+                                <th className="p-3">Action</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {items.map((item) => (
-                            <tr key={item.id} className="border-b">
-                                <td className="p-3">
-                                    <input type="checkbox"
-                                           checked={selectedIds.includes(item.id)}
-                                           onChange={() => handleCheckboxChange(item.id)}
-                                    />
-                                </td>
-                                <td className="p-3">{item.name}</td>
-                                <td className="p-3">{item.description}</td>
-                                <td className="p-3">{item.quantity}</td>
-                                <td className="p-3">{item.location}</td>
+                            {items.map((item) => (
+                                <tr key={item.id} className="border-b">
+                                    <td className="p-3">
+                                        <input type="checkbox"
+                                            checked={selectedIds.includes(item.id)}
+                                            onChange={() => handleCheckboxChange(item.id)}
+                                        />
+                                    </td>
+                                    <td className="p-3">{item.name}</td>
+                                    <td className="p-3">{item.description}</td>
+                                    <td className="p-3">{item.quantity}</td>
+                                    <td className="p-3">{item.location}</td>
+                                    <td className="p-3">
+                                        <button
+                                            onClick={() => handleEdit(item.id)}
+                                            className="text-blue-300 hover:underline mr-2">
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(item.id)}
+                                            className="text-red-600 hover:underline mr-2">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            {/* Contoh Data (nanti diganti dengan data dari backend) */}
+                            <tr className="border-b">
+                                <td className="p-3"><input type="checkbox" /></td>
+                                <td className="p-3">Book of Success</td>
+                                <td className="p-3">Self-improvement book</td>
+                                <td className="p-3">1</td>
+                                <td className="p-3">Bedroom</td>
                                 <td className="p-3">
                                     <button
-                                        onClick={() => handleEdit(item.id)}
-                                        className="text-blue-600 hover:underline mr-2">
+                                        onClick={() => handleEdit(1)}
+                                        className="text-blue-300 hover:underline mr-2">
                                         Edit
                                     </button>
-                                    <button
-                                        onClick={() => handleDelete(item.id)}
-                                        className="text-red-600 hover:underline mr-2">
-                                        Delete
-                                    </button>
+                                    <button className="text-red-600 hover:underline">Delete</button>
                                 </td>
                             </tr>
-                        ))}
-                        {/* Contoh Data (nanti diganti dengan data dari backend) */}
-                        {/*<tr className="border-b">*/}
-                        {/*    <td className="p-3"><input type="checkbox"/></td>*/}
-                        {/*    <td className="p-3">Book of Success</td>*/}
-                        {/*    <td className="p-3">Self-improvement book</td>*/}
-                        {/*    <td className="p-3">1</td>*/}
-                        {/*    <td className="p-3">Bedroom</td>*/}
-                        {/*    <td className="p-3">*/}
-                        {/*        <button className="text-blue-600 hover:underline mr-2">Edit</button>*/}
-                        {/*        <button className="text-red-600 hover:underline">Delete</button>*/}
-                        {/*    </td>*/}
-                        {/*</tr>*/}
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            {/* form popup */}
-            {/*{isFormOpen && (*/}
-            {/*    <div className="fixed inset-0 flex items-center justify-center">*/}
-            {/*        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">*/}
-            {/*            <ItemForm*/}
-            {/*                onSubmit={handleFormSubmit}*/}
-            {/*                initialValues={currentItem}*/}
-            {/*                onCancel={handleFormCancel}*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*)}*/}
+            {/* form popup  */}
+            {isFormOpen && (
+                <ItemForm
+                    onSubmit={handleFormSubmit}
+                    initialValues={currentItem}
+                    onCancel={handleFormCancel}
+                />
+            )}
         </div>
     );
 };
