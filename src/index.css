@@ -39,4 +39,16 @@
     .item-container {
         @apply text-center shadow-[rgba(149,157,165,0.2)_0px_8px_24px] p-8 px-12 bg-white rounded-lg
     }
+
+    .modal-container {
+        @apply fixed inset-0 z-50 flex items-center justify-center
+    }
+
+    .modal-content {
+        @apply relative bg-white p-6 rounded-lg w-11/12 md:w-1/2
+    }
+
+    .overlay {
+        @apply absolute inset-0 bg-gray-500 opacity-50
+    }
 }

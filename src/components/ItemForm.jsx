@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 // eslint-disable-next-line react/prop-types
-const ItemForm = ({onSubmit, initialData, onCancel}) => {
+const ItemForm = ({ onSubmit, initialData, onCancel }) => {
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -9,8 +9,7 @@ const ItemForm = ({onSubmit, initialData, onCancel}) => {
         location: ""
     });
 
-    // if initial data is provide (for edit), populate the form
-
+    // If initial data is provided (for edit), populate the form.
     useEffect(() => {
         if (initialData) {
             setFormData(initialData);
@@ -18,8 +17,8 @@ const ItemForm = ({onSubmit, initialData, onCancel}) => {
     }, [initialData]);
 
     const handleInputChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = (e) => {
@@ -28,8 +27,9 @@ const ItemForm = ({onSubmit, initialData, onCancel}) => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="login">
+        <div className="modal-container">
+            <div className="overlay"></div>
+            <div className="modal-content">
                 <h2>{initialData ? "Edit Item" : "Add Item"}</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <input
@@ -73,17 +73,10 @@ const ItemForm = ({onSubmit, initialData, onCancel}) => {
                         />
                     </div>
                     <div className="flex flex-row justify-between">
-                        <button
-                            type="button"
-                            onClick={onCancel}
-                            className="button"
-                        >
+                        <button type="button" onClick={onCancel} className="button">
                             Cancel
                         </button>
-                        <button
-                            type="submit"
-                            className="button"
-                        >
+                        <button type="submit" className="button">
                             {initialData ? "Save Changes" : "Add Item"}
                         </button>
                     </div>
