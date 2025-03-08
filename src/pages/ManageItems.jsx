@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import api from "../api/axios.js";
 import ItemForm from "../components/ItemForm.jsx";
@@ -6,8 +6,9 @@ import ItemForm from "../components/ItemForm.jsx";
 const ManageItems = () => {
     const [items, setItems] = useState([]); // store item
     const [selectedIds, setSelectedIds] = useState([]); // select item with checkbox
-    const [isFormOpen, setIsFormOpen] = useState(false);
-    const [currentItem, setCurrentItem] = useState(null);
+    const navigate = useNavigate();
+    // const [isFormOpen, setIsFormOpen] = useState(false);
+    // const [currentItem, setCurrentItem] = useState(null);
 
     useEffect(() => {
         fetchItems();
@@ -48,35 +49,39 @@ const ManageItems = () => {
         }
     }
 
-    // Open form editor
-    const handleEdit = async (item) => {
-        setCurrentItem(item);
-        setIsFormOpen(true);
+    // Open form editor (current change redirect instead modal because I'm still don't know how to implement proper design ahahahah
+    // const handleEdit = async (item) => {
+    //     setCurrentItem(item);
+    //     setIsFormOpen(true);
+    // };
+
+    const handleEdit = (id) => {
+        navigate(`/edit-item/${id}`);
     };
 
     // Handle form submit both for add or edit
-    const handleFormSubmit = async (formData) => {
-        try {
-            if (currentItem) {
-                // update existing item
-                await api.put(`/items/${currentItem.id}`, formData);
-            } else {
-                // add new item
-                await api.post("/items", formData);
-            }
-            fetchItems(); // refresh lsit
-            setIsFormOpen(false); // close form popup
-            setCurrentItem(null); // reset item field on form
-        } catch (error) {
-            console.log("Error saving items: ", error);
-        }
-    };
+    // const handleFormSubmit = async (formData) => {
+    //     try {
+    //         if (currentItem) {
+    //             // update existing item
+    //             await api.put(`/items/${currentItem.id}`, formData);
+    //         } else {
+    //             // add new item
+    //             await api.post("/items", formData);
+    //         }
+    //         fetchItems(); // refresh lsit
+    //         setIsFormOpen(false); // close form popup
+    //         setCurrentItem(null); // reset item field on form
+    //     } catch (error) {
+    //         console.log("Error saving items: ", error);
+    //     }
+    // };
 
     // Close form popup
-    const handleFormCancel = async () => {
-        setIsFormOpen(false);
-        setIsFormOpen(null);
-    };
+    // const handleFormCancel = async () => {
+    //     setIsFormOpen(false);
+    //     setIsFormOpen(null);
+    // };
 
     return (
         <div className="flex">
@@ -140,7 +145,7 @@ const ManageItems = () => {
                                 <td className="p-3">{item.location}</td>
                                 <td className="p-3">
                                     <button
-                                        onClick={() => handleEdit(item)}
+                                        onClick={() => handleEdit(item.id)}
                                         className="text-blue-600 hover:underline mr-2">
                                         Edit
                                     </button>
@@ -170,17 +175,17 @@ const ManageItems = () => {
             </div>
 
             {/* form popup */}
-            {isFormOpen && (
-                <div className="fixed inset-0 flex items-center justify-center">
-                    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                        <ItemForm
-                            onSubmit={handleFormSubmit}
-                            initialValues={currentItem}
-                            onCancel={handleFormCancel}
-                        />
-                    </div>
-                </div>
-            )}
+            {/*{isFormOpen && (*/}
+            {/*    <div className="fixed inset-0 flex items-center justify-center">*/}
+            {/*        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">*/}
+            {/*            <ItemForm*/}
+            {/*                onSubmit={handleFormSubmit}*/}
+            {/*                initialValues={currentItem}*/}
+            {/*                onCancel={handleFormCancel}*/}
+            {/*            />*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*)}*/}
         </div>
     );
 };
